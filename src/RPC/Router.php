@@ -35,6 +35,10 @@ class Router
 
 	public function setRewriteRules( $rules )
 	{
+		if (!is_array($rules)) {
+			$rules = [];
+		}
+
 		$this->rewrite_rules = array_replace( $this->rewrite_rules, $rules );
 	}
 

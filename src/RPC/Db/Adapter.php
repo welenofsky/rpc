@@ -151,7 +151,7 @@ abstract class Adapter
 			$this->getHandle()->_queries[] = $sql;
 		}
 
-		if( $sql != "select last_insert_id() as n" )
+		if( !$this->isSQLQueryForLastId($sql) )
 		{
 			if( getenv( 'LOG_QUERIES' ) === "true" )
 			{
@@ -161,7 +161,7 @@ abstract class Adapter
 
 		$this->_rpc_affectedrows = $this->getHandle()->exec( $sql );
 
-		if( $sql == "select last_insert_id() as n" )
+		if( $this->isSQLQueryForLastId($sql) )
 		{
 			if( getenv( 'LOG_QUERIES' ) === "true" )
 			{
@@ -193,7 +193,7 @@ abstract class Adapter
 			$this->getHandle()->_queries[] = $sql;
 		}
 
-		if( $sql != "select last_insert_id() as n" )
+		if( !$this->isSQLQueryForLastId($sql) )
 		{
 			if( getenv( 'LOG_QUERIES' ) === "true" )
 			{
@@ -203,7 +203,7 @@ abstract class Adapter
 
 		$res = $this->getHandle()->query( $sql, $this->getFetchMode() );
 
-		if( $sql == "select last_insert_id() as n" )
+		if( $this->isSQLQueryForLastId($sql) )
 		{
 			if( getenv( 'LOG_QUERIES' ) === "true" )
 			{
@@ -315,6 +315,10 @@ abstract class Adapter
 			return 'DEBUG_QUERIES variable is not defined in .env file.';
 		}
 		return ( $all ? $this->getHandle()->_queries : end( $this->getHandle()->_queries ) );
+	}
+
+	public function isSQLQueryForLastId($sql) {
+		return $sql === 'select last_insert_rowid() as n' || $sql === 'select last_insert_id() as n';
 	}
 
 }
